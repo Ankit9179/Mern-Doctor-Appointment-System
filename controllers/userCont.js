@@ -1,4 +1,40 @@
-const registerController = () => {};
+const userModel = require("../models/userModels");
+const bcrypt = require("bcrypt");
+const saltRounds = 10; // Number of salt rounds
+//register callback func
+const registerController = async (req, res) => {
+  try {
+    //exisiting user
+    const exisitingUseer = await userModel.findOne({ email: req.body.email });
+    if (exisitingUseer) {
+      return res.status(200).send({
+        success: false,
+        message: "user already exisit",
+      });
+    }
+
+    //password hash
+    function hashPassword(password) {
+      // Generate a salt and hash the password
+      return bcrypt.hashSync(password, saltRounds);
+    }
+    const hashedPassword = hashPassword(req.body.password);
+    req.body.password = hashedPassword;
+
+    const newUser = new userModel(req.body);
+    await newUser.save();
+    res.status(201).send({
+      success: true,
+      message: "Register successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: `Register controller ${error.message}`, // 500 internal server error
+    });
+  }
+};
 
 const loginController = () => {};
 
