@@ -10,8 +10,9 @@ const LoginPage = () => {
     try {
       const res = await axios.post("/api/v1/user/login", values);
       if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
         message.success("User login successfully");
-        navigate("/");
+        navigate("/register");
       } else {
         message.error(res.data.message);
       }
