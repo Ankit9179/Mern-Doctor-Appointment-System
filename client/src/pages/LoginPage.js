@@ -12,7 +12,7 @@ const LoginPage = () => {
       if (res.data.success) {
         localStorage.setItem("token", res.data.token);
         message.success("User login successfully");
-        navigate("/register");
+        navigate("/");
       } else {
         message.error(res.data.message);
       }

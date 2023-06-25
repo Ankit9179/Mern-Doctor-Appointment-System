@@ -37,6 +37,7 @@ const registerController = async (req, res) => {
   }
 };
 
+//login callback func
 const loginController = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
@@ -69,4 +70,31 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { loginController, registerController };
+//Auth callback func
+const authController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    if (!user) {
+      return res.status(200).send({
+        success: false,
+        message: "user note found auth",
+      });
+    } else {
+      res.status(200).send({
+        success: true,
+        data: {
+          name: user.name,
+          email: user.email,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "auth error",
+      error,
+    });
+  }
+};
+module.exports = { loginController, registerController, authController };
